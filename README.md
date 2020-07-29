@@ -19,7 +19,7 @@ Cinema Plus is an online Movie Ticket Booking web app with MERN Stack.
 
 MERN stack is the idea of using Javascript/Node for fullstack web development.
 
-<img src="https://github.com/giangnh98/Cinema/client/src/assets/img/mern.png" />
+<img src="https://i.ibb.co/XJD99ZY/mern.png" />
 
 # Features!
 
@@ -27,10 +27,26 @@ MERN stack is the idea of using Javascript/Node for fullstack web development.
   - Add / Update / Delete Cinemas
   - Add / Update / Delete Showtimes
   - Add / Update / Delete Reservations
+  - Add / Update / Delete Prebooking
   - Add / Update / Delete Users
   - Add / Update / Delete Rooms
   - Paypal for reservation check out
+ 
+Swagger doc:
+- you can access with http://localhost:8080/api/docs
 
+App
+- you can access the home page with http://localhost:3000/
+
+Account for demo
+- role superadmin
+    - email: giangdeptroai1998@gmail.com
+    - password: 421998
+- role admin
+    - email: giang.hong.nguyen1998@gmail.com
+    - password: 421998
+- role guest
+    - create in register page
 
 You can also:
   - Send HTML emails check tickets payment 
@@ -64,8 +80,6 @@ $ npm run start:dev
 
  - Add Light Mode / More themes
  - Write Tests
-
-# Screenshots!
 
 License
 ----
