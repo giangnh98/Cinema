@@ -29,6 +29,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="full.screen.before.presentation.mode" value="false" />
+    <property name="ignore_missing_gitignore" value="true" />
     <property name="last.edited.regexp" value="http://www.google.com" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/client/src/assets/images" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -170,7 +171,7 @@
       <workItem from="1595906972999" duration="19024000" />
       <workItem from="1595939589348" duration="11698000" />
       <workItem from="1595979476553" duration="12379000" />
-      <workItem from="1596011136433" duration="13070000" />
+      <workItem from="1596011136433" duration="13819000" />
     </task>
     <servers />
   </component>
