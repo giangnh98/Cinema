@@ -63,7 +63,6 @@ class MatrixCell extends React.Component {
       return (
          <input ref="input" type="text" style={style} value={this.props.value} readOnly={this.props.readonly}
                 onClick={this.onClick.bind(this)}
-                onKeyUp={this.onKeyUp.bind(this)}
                 onChange={this.onChange.bind(this)} />
       );
    }

@@ -58,7 +58,7 @@ export class RoomController {
    
    @Post()
    @Auth(UserRole.SUPERADMIN, UserRole.ADMIN)
-   async create(@Body() roomParams: RoomParams, @CurrentUser() currentUser: InstanceType<User>): Promise<Room> {
+   async create(@Body() roomParams: RoomParams, @CurrentUser() currentUser: InstanceType<User>): Promise<any> {
       const { cinema, name, seats, structure } = roomParams;
       const user = currentUser.toJSON() as User;
       try {
@@ -70,9 +70,9 @@ export class RoomController {
          newRoom.structure = structure;
          newRoom.createdBy = user.id;
          newRoom.updatedBy = user.id;
-         
+
          const room = await this._roomService.create(newRoom);
-         
+
          return room.toJSON() as Room;
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -43,8 +43,8 @@ class Matrix extends React.Component {
       });
    }
 
-   componentDidMount() {
-      console.log(this.props.columns);
+   componentDidUpdate(prevProps, prevState, snapshot) {
+      this.props.onStructureChange(this.state.columns);
    }
 
    getColumn(n) {
@@ -85,7 +85,6 @@ class Matrix extends React.Component {
       for (let i = 0; i < this.getHeight(); i++) {
          rows[i] = this.getRow(i);
       }
-      ;
 
       return rows;
    }
@@ -154,7 +153,7 @@ class Matrix extends React.Component {
 
    addRow() {
       let columns = this.state.columns;
-      for (let i = 0; i < columns.length; i++) {
+      for (let i = 0; i < this, this.getWidth(); i++) {
          columns[i].push("");
       }
       this.setState({
@@ -225,13 +224,13 @@ class Matrix extends React.Component {
       let currentCell = 0;
 
       let columns = this.state.columns.map(function(columnValues, x) {
-         let y = 0;
          let column = columnValues.map(function(value, y) {
             let active = currentCell === activeCell;
-            let cell = <MatrixCell key={x + "-" + y} value={value} matrix={this} x={x} y={y} active={active}
-                                   readonly={this.props.readonly}/>;
             currentCell++;
-            return cell;
+            return (
+               <MatrixCell key={x + "-" + y} value={value} matrix={this} x={x} y={y} active={active}
+                           readonly={this.props.readonly}/>
+            );
          }, this);
 
          let columnStyle = {

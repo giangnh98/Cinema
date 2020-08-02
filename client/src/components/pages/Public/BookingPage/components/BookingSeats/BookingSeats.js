@@ -100,7 +100,8 @@ const BookingSeats = (props) => {
                                  seat === 2 ? "#E96106" :
                                     seat === 4 ? "rgb(120, 205, 4)" :
                                        seat === 5 ? "rgb(65, 66, 70)" :
-                                          "#1A1A1A"
+                                          seat === 6 ? "rgb(228,11,139)" :
+                                             "#1A1A1A"
                            }>
                            {index}
                         </Box>
@@ -126,14 +127,6 @@ const BookingSeats = (props) => {
                <div className={classes.seatInfo}>
                   <div
                      className={classes.seatInfoLabel}
-                     style={{ background: "#848484" }}>
-
-                  </div>
-                  Seat Available
-               </div>
-               <div className={classes.seatInfo}>
-                  <div
-                     className={classes.seatInfoLabel}
                      style={{ background: "rgb(65, 66, 70)" }}>
 
                   </div>
@@ -150,9 +143,24 @@ const BookingSeats = (props) => {
                <div className={classes.seatInfo}>
                   <div
                      className={classes.seatInfoLabel}
+                     style={{ background: "#848484" }}>
+
+                  </div>
+                  NORMAL Seat
+               </div>
+               <div className={classes.seatInfo}>
+                  <div
+                     className={classes.seatInfoLabel}
                      style={{ background: "#E96106" }}>
                   </div>
-                  V.I.P Seat
+                  VIP Seat
+               </div>
+               <div className={classes.seatInfo}>
+                  <div
+                     className={classes.seatInfoLabel}
+                     style={{ background: "rgb(228,11,139)" }}>
+                  </div>
+                  COUPLE Seat
                </div>
             </div>
          </Box>

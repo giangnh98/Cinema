@@ -5,7 +5,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 
 import AccountProfile from "./components/AccountProfile/AccountProfile";
 //loading
-import CustomCircularProgress from "../../../Loading/CircularProgress";
 import { getUser } from "../../../../ultils/auth";
 
 // Component styles

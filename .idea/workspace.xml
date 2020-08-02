@@ -47,19 +47,19 @@
     <property name="ts.external.directory.path" value="E:\project\Movie\server\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\project\Movie\client\src\components\pages\Admin\User\components\AddUser" />
-      <recent name="E:\project\Movie\server\src" />
-      <recent name="E:\project\Movie\server" />
-      <recent name="E:\project\Movie\server\src\ticket" />
-      <recent name="E:\project\Movie" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\project\Movie\client\src\assets\images" />
       <recent name="E:\project\Movie\client\src\assets\css" />
       <recent name="E:\project\Movie\client\src\assets" />
       <recent name="E:\project\Movie\client\src\theme" />
       <recent name="E:\project\Movie\client\src\components" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\project\Movie\client\src\components\pages\Admin\Room\components" />
+      <recent name="E:\project\Movie\client\src\components\pages\Admin\User\components\AddUser" />
+      <recent name="E:\project\Movie\server\src" />
+      <recent name="E:\project\Movie\server" />
+      <recent name="E:\project\Movie\server\src\ticket" />
     </key>
   </component>
   <component name="RunManager">
@@ -175,6 +175,7 @@
       <workItem from="1596064218550" duration="2986000" />
       <workItem from="1596182703678" duration="640000" />
       <workItem from="1596236534435" duration="21162000" />
+      <workItem from="1596329499015" duration="14876000" />
     </task>
     <servers />
   </component>
@@ -244,22 +245,22 @@
       <screen x="0" y="40" width="1536" height="824" />
     </state>
     <state x="546" y="194" key="FileChooserDialogImpl/0.40.1536.824@0.40.1536.824" timestamp="1595025725932" />
-    <state width="1515" height="207" key="GridCell.Tab.0.bottom" timestamp="1596275679841">
+    <state width="1515" height="240" key="GridCell.Tab.0.bottom" timestamp="1596348161467">
       <screen x="0" y="40" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.bottom/0.40.1536.824@0.40.1536.824" timestamp="1596275679841" />
-    <state width="1515" height="207" key="GridCell.Tab.0.center" timestamp="1596275679841">
+    <state width="1515" height="240" key="GridCell.Tab.0.bottom/0.40.1536.824@0.40.1536.824" timestamp="1596348161467" />
+    <state width="1515" height="240" key="GridCell.Tab.0.center" timestamp="1596348161467">
       <screen x="0" y="40" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.center/0.40.1536.824@0.40.1536.824" timestamp="1596275679841" />
-    <state width="1515" height="207" key="GridCell.Tab.0.left" timestamp="1596275679841">
+    <state width="1515" height="240" key="GridCell.Tab.0.center/0.40.1536.824@0.40.1536.824" timestamp="1596348161467" />
+    <state width="1515" height="240" key="GridCell.Tab.0.left" timestamp="1596348161467">
       <screen x="0" y="40" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.left/0.40.1536.824@0.40.1536.824" timestamp="1596275679841" />
-    <state width="1515" height="207" key="GridCell.Tab.0.right" timestamp="1596275679841">
+    <state width="1515" height="240" key="GridCell.Tab.0.left/0.40.1536.824@0.40.1536.824" timestamp="1596348161467" />
+    <state width="1515" height="240" key="GridCell.Tab.0.right" timestamp="1596348161467">
       <screen x="0" y="40" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.right/0.40.1536.824@0.40.1536.824" timestamp="1596275679841" />
+    <state width="1515" height="240" key="GridCell.Tab.0.right/0.40.1536.824@0.40.1536.824" timestamp="1596348161467" />
     <state width="1515" height="261" key="GridCell.Tab.1.bottom" timestamp="1596011204099">
       <screen x="0" y="40" width="1536" height="824" />
     </state>
@@ -324,10 +325,10 @@
       <screen x="0" y="40" width="1536" height="824" />
     </state>
     <state x="425" y="207" key="run.anything.popup/0.40.1536.824@0.40.1536.824" timestamp="1595557662882" />
-    <state x="431" y="185" width="672" height="678" key="search.everywhere.popup" timestamp="1596260896724">
+    <state x="431" y="185" width="672" height="678" key="search.everywhere.popup" timestamp="1596347051337">
       <screen x="0" y="40" width="1536" height="824" />
     </state>
-    <state x="431" y="185" width="672" height="678" key="search.everywhere.popup/0.40.1536.824@0.40.1536.824" timestamp="1596260896724" />
+    <state x="431" y="185" width="672" height="678" key="search.everywhere.popup/0.40.1536.824@0.40.1536.824" timestamp="1596347051337" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

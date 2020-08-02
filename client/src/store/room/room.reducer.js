@@ -4,7 +4,7 @@ const initialState = {
    rooms: [],
    room: null,
    loading: false,
-   error: null,
+   error: null
 };
 
 export default function roomsReducer(state = initialState, action) {
@@ -26,10 +26,12 @@ export default function roomsReducer(state = initialState, action) {
             room: action.payload,
             loading: false
          };
+      case RoomActions.CREATE_ROOM_SUCCESS:
+      case RoomActions.UPDATE_ROOM_SUCCESS:
       case RoomActions.FETCH_FAIL:
          return {
             ...state,
-            loading: false,
+            loading: false
          };
       case RoomActions.CLEAR_ROOM:
          return {
