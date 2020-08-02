@@ -29,7 +29,6 @@ export default function BookingCheckout(props) {
       user,
       showtime,
       selectedSeats,
-      seatsAvailable,
       onBookSeats,
       setInversion,
       onCancelSeats
@@ -108,7 +107,6 @@ export default function BookingCheckout(props) {
                <Button
                   color="inherit"
                   fullWidth
-                  disabled={seatsAvailable <= 0}
                   onClick={() => onCancelSeats()}>
                   Cancel
                </Button>

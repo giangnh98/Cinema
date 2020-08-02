@@ -131,6 +131,7 @@ class Movie extends React.Component {
             });
             if (!data.error) {
                this.props.showErrors("Delete Movie Success!", "success");
+               window.location.reload();
             } else if (data.error) {
                this.props.showErrors(data.message, "error");
             }

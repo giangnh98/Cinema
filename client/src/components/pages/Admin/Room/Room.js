@@ -2,19 +2,23 @@ import React from "react";
 // Import React Table
 import ReactTable from "react-table-6";
 import "../../.././../assets/css/react-table.css";
-import moment, { now } from "moment";
-import _ from "lodash";
-import { Link, Button, Grid, IconButton } from "@material-ui/core";
-import SyncIcon from "@material-ui/icons/Sync";
 import setAuthHeaders from "../../../../ultils/setAuthToken";
-import { showErrors } from "../../../../store/alert/alert.thunk";
-import { connect } from "react-redux";
-import UserInfo from "../User/components/UserInfo";
-import DialogTicket from "../../../Ticket/DialogTicket";
-import ShowtimeInfo from "../Reservations/components/ShowtimeInfo";
+import moment from "moment";
+import _ from "lodash";
+import { IconButton, Grid, Link, Button } from "@material-ui/core";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import DeleteForeverOutlinedIcon from "@material-ui/icons/DeleteForeverOutlined";
+import SyncIcon from "@material-ui/icons/Sync";
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import DialogTicket from "../../../Ticket/DialogTicket";
+import { connect } from "react-redux";
+import { showErrors } from "../../../../store/alert/alert.thunk";
+import ResponsiveDialog from "../../../ResponsiveDialog/ResponsiveDialog";
+import UserInfo from "../User/components/UserInfo";
+import ConfirmDialog from "../../../ConfirmDialog/ConfirmDialog";
+import AddRoom from "./components/AddRoom";
 
-class Prebooking extends React.Component {
+class Room extends React.Component {
 
    pageSize = 10;
 
@@ -31,13 +35,14 @@ class Prebooking extends React.Component {
          dialog: {
             open: false,
             openDialog: false,
+            confirm: false,
             id: ""
          }
       };
    }
 
-   fetchPrebooking = () => {
-      fetch(`/api/prebooking`, { method: "GET" })
+   fetchRooms = () => {
+      fetch(`/api/rooms`, { method: "GET", headers: setAuthHeaders() })
          .then(response => response.json())
          .then(data => {
             this.setState({
@@ -49,18 +54,18 @@ class Prebooking extends React.Component {
             this.setState({
                loading: false
             });
-            console.log(error.message);
+            this.props.showErrors(error.message, "error");
          });
    };
 
    componentDidMount() {
       this.setState({ loading: true });
-      this.fetchPrebooking();
+      this.fetchRooms();
    }
 
    componentDidUpdate(prevProps, prevState, snapshot) {
       if (prevState.pageSize !== this.state.pageSize) {
-         this.fetchPrebooking();
+         this.fetchRooms();
       }
    }
 
@@ -69,6 +74,7 @@ class Prebooking extends React.Component {
    }
 
    fetchData = _.debounce(state => {
+      const { showErrors } = this.props;
       this.setState({
          loading: true,
          pageSize: state.pageSize,
@@ -77,13 +83,18 @@ class Prebooking extends React.Component {
       const objectSort = state.sorted[0];
       const id = objectSort ? objectSort.id.toLowerCase() : "id";
       const sort = objectSort ? objectSort.desc : false;
-      const url = `/api/prebooking/paginate?pageSize=${state.pageSize}
+      const url = `/api/rooms/paginate?pageSize=${state.pageSize}
                &page=${state.page}
                &sortBy=${id}
                &sortType=${sort ? "descending" : "ascending"}`;
       fetch(url, { method: "GET", headers: setAuthHeaders() })
          .then(response => response.json())
          .then(data => {
+            data.map(row => {
+               row.created = moment(row.created).format("HH:mm a, dddd DD/MM/YYYY");
+               row.updated = moment(row.updated).format("HH:mm a, dddd DD/MM/YYYY");
+               return row;
+            });
             this.setState({
                loading: false,
                data: data
@@ -93,26 +104,26 @@ class Prebooking extends React.Component {
             this.setState({
                loading: false
             });
-            this.props.showErrors(error.message, "error");
+            showErrors(error.message, "error");
          });
    }, 80);
 
-   deletePrebooking = (prebookingId) => {
+   deleteCinema = (roomId) => {
       this.setState({
-         loading: true
+         loading: true,
+         dialog: { ...this.state.dialog, confirm: false }
       });
-      fetch(`/api/prebooking/${prebookingId}`, { method: "DELETE", headers: setAuthHeaders() })
+      fetch(`/api/rooms/${roomId}`, { method: "DELETE", headers: setAuthHeaders() })
          .then(response => response.json())
          .then(data => {
             this.setState({
                loading: false
             });
             if (!data.error) {
-               this.props.showErrors("Delete Prebooking Success!", "success");
+               this.props.showErrors("Delete Room Success!", "success");
                window.location.reload();
-            }
-            if (data.error) {
-               this.props.showErrors(data.message, "success");
+            } else if (data.error) {
+               this.props.showErrors(data.message, "error");
             }
          })
          .catch(error => {
@@ -127,14 +138,23 @@ class Prebooking extends React.Component {
       this.setState({ dialog: { ...this.state.dialog, open: false } });
    };
 
-   toggleShowtimeDialog = () => {
+   toggleDialog = () => {
       this.setState({ dialog: { ...this.state.dialog, openDialog: false } });
+   };
+
+   toggleConfirm = () => {
+      this.setState({ dialog: { ...this.state.dialog, confirm: false } });
    };
 
    render() {
       return (
          <div>
             <div style={{ display: "flex", justifyContent: "flex-end", margin: "10px 0" }}>
+               <Button variant="contained" color="primary" startIcon={<MeetingRoomIcon/>}
+                       style={{ margin: "0 5px" }}
+                       onClick={() => this.setState({ dialog: { ...this.state.dialog, openDialog: true, id: "" } })}>
+                  Add Room
+               </Button>
                <Button variant="contained" startIcon={<SyncIcon/>} onClick={() => this.fetchData(this.state)}
                        style={{ margin: "0 5px", backgroundColor: "green", color: "white" }}>
                   Refresh
@@ -143,23 +163,17 @@ class Prebooking extends React.Component {
             <ReactTable
                columns={[
                   {
-                     Header: "Showtime",
-                     accessor: "showtime",
-                     Cell: e => (
-                        <Link
-                           component="button"
-                           variant="body2"
-                           onClick={() => {
-                              this.setState({ dialog: { ...this.state.dialog, openDialog: true, id: e.value } });
-                           }}
-                        >
-                           {e.value}
-                        </Link>
-                     )
+                     Header: "Name",
+                     accessor: "name"
                   },
                   {
-                     Header: "User",
-                     accessor: "user",
+                     Header: "Seats",
+                     accessor: "seats",
+                     width: 100
+                  },
+                  {
+                     Header: "CreatedBy",
+                     accessor: "createdBy",
                      Cell: e => (
                         <Link
                            component="button"
@@ -173,31 +187,57 @@ class Prebooking extends React.Component {
                      )
                   },
                   {
-                     Header: "Seat",
-                     accessor: "seats",
-                     width: 100,
-                     Cell: e => `${String.fromCharCode(97 + e.original.seats[0]).toUpperCase()}${e.original.seats[1]}`
+                     Header: "UpdatedBy",
+                     accessor: "updatedBy",
+                     Cell: e => (
+                        <Link
+                           component="button"
+                           variant="body2"
+                           onClick={() => {
+                              this.setState({ dialog: { ...this.state.dialog, open: true, id: e.value } });
+                           }}
+                        >
+                           {e.value}
+                        </Link>
+                     )
                   },
                   {
                      Header: "CreatedAt",
-                     accessor: "prebooking",
-                     Cell: e => moment(e.original.created).format('HH:mm a, dddd DD/MM/YYYY')
+                     accessor: "created"
                   },
                   {
-                     Header: "UnpaidTime",
-                     accessor: "prebooking",
-                     Cell: e => `${moment.utc(moment(now()).diff(moment(e.original.created))).format("HH:mm:ss")}`
+                     Header: "UpdatedAt",
+                     accessor: "updated"
                   },
                   {
                      Header: "Actions",
-                     accessor: "prebooking",
+                     accessor: "room",
+                     filterable: false,
                      width: 100,
                      sortable: false,
                      Cell: props => (
                         <Grid container justify={"center"} alignItems={"center"}>
+                           <IconButton color="primary" aria-label="edit button"
+                                       onClick={() => {
+                                          this.setState({
+                                             dialog: {
+                                                ...this.state.dialog,
+                                                openDialog: true,
+                                                id: props.original.id
+                                             }
+                                          });
+                                       }}>
+                              <EditOutlinedIcon fontSize={"small"}/>
+                           </IconButton>
                            <IconButton color="secondary" aria-label="delete button"
                                        onClick={() => {
-                                          this.deletePrebooking(props.original.id);
+                                          this.setState({
+                                             dialog: {
+                                                ...this.state.dialog,
+                                                confirm: true,
+                                                id: props.original.id
+                                             }
+                                          });
                                        }}>
                               <DeleteForeverOutlinedIcon fontSize={"small"}/>
                            </IconButton>
@@ -215,17 +255,25 @@ class Prebooking extends React.Component {
                onSortedChange={(newSort, column) => {
                   this.setState({ sorted: newSort });
                }}
+               onFilteredChange={filtered => this.setState({ filtered })}
                className="-striped -highlight"
             />
 
-            <DialogTicket open={this.state.dialog.open} title={"User Info!"}
+            <DialogTicket open={this.state.dialog.open} title={"CreatedBy/UpdatedBy Info!"}
                           handleClose={this.handleClose}>
                <UserInfo id={this.state.dialog.id}/>
             </DialogTicket>
-            <DialogTicket open={this.state.dialog.openDialog} title={"Showtime Info!"}
-                          handleClose={this.toggleShowtimeDialog}>
-               <ShowtimeInfo id={this.state.dialog.id}/>
-            </DialogTicket>
+            <ResponsiveDialog
+               id="Add-room"
+               open={this.state.dialog.openDialog}
+               handleClose={this.toggleDialog}>
+               <AddRoom selectedRoom={this.state.data.find(item => item.id === this.state.dialog.id)}/>
+            </ResponsiveDialog>
+            <ConfirmDialog
+               open={this.state.dialog.confirm}
+               handleClose={this.toggleConfirm}
+               handleConfirm={() => this.deleteCinema(this.state.dialog.id)}
+            />
          </div>
       );
    }
@@ -233,4 +281,4 @@ class Prebooking extends React.Component {
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, { showErrors })(Prebooking);
+export default connect(mapStateToProps, { showErrors })(Room);

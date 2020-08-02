@@ -104,6 +104,8 @@ export class PrebookingController {
             const newPrebooking = this._prebookingService.createModel();
             newPrebooking.showtime = showtimeRef._id;
             newPrebooking.user = curUser.id;
+            newPrebooking.created = new Date();
+            newPrebooking.updated = new Date();
             newPrebooking.createdBy = curUser.id;
             newPrebooking.updatedBy = curUser.id;
             newPrebooking.seats = seat;

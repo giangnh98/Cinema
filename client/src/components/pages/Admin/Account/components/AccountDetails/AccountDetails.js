@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import { Button, TextField, withStyles } from "@material-ui/core";
+import { Button, CircularProgress, TextField, withStyles } from "@material-ui/core";
 import Portlet from "../../../../../Portlet/Portlet";
 import PortletContent from "../../../../../PortletContent/PortletContent";
 import PortletFooter from "../../../../../PortletFooter/PortletFooter";
@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import { showErrors } from "../../../../../../store/alert/alert.thunk";
 import { updateUser } from "../../../../../../store/user/user.thunk";
 
-const AccountDetails = ({ user, className, classes, showErrors: setAlert, updateUser }) => {
+const AccountDetails = ({ user, className, classes, showErrors: setAlert, updateUser, loading }) => {
    // define state
    const [account, setAccount] = useState({
       id: "",
@@ -99,6 +99,11 @@ const AccountDetails = ({ user, className, classes, showErrors: setAlert, update
                />
             </PortletHeader>
             <PortletContent noPadding>
+               {loading && (
+                  <div style={{display: "flex", justifyContent: "center", padding: "10px"}}>
+                     <CircularProgress />
+                  </div>
+               )}
                <div className={classes.field}>
                   <TextField
                      className={classes.textField}
@@ -167,6 +172,8 @@ const AccountDetails = ({ user, className, classes, showErrors: setAlert, update
    );
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+   loading: state.userState.loading
+});
 
 export default connect(mapStateToProps, { showErrors, updateUser })(withStyles(styles)(AccountDetails));

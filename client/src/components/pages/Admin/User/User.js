@@ -131,6 +131,7 @@ class User extends React.Component {
             });
             if (!data.error) {
                this.props.showErrors("Delete User Success!", "success");
+               window.location.reload();
             } else if (data.error) {
                this.props.showErrors(data.message, "error");
             }

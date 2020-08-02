@@ -65,7 +65,7 @@ const ReservationsTable = (props) => {
                   </TableRow>
                </TableHead>
                <TableBody>
-                  {reservations
+                  {reservations && reservations.length && reservations
                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                      .map(reservation => (
                         <TableRow
@@ -73,16 +73,17 @@ const ReservationsTable = (props) => {
                            hover
                            key={reservation.id}>
                            <TableCell className={classes.tableCell}>
-                              {ToTitleCase(reservation.showtime.movie.title)}
+                              {reservation.showtime && reservation.showtime.movie && reservation.showtime.movie.title && ToTitleCase(reservation.showtime.movie.title)}
                            </TableCell>
                            <TableCell className={classes.tableCell}>
-                              {reservation.showtime.room.cinema.name}
+                              {reservation.showtime && reservation.showtime.room && reservation.showtime.room.cinema
+                              && reservation.showtime.room.cinema.name}
                            </TableCell>
                            <TableCell className={classes.tableCell}>
-                              {moment(reservation.showtime.released).format("dddd DD/MM/YYYY")}
+                              {reservation.showtime && moment(reservation.showtime.released).format("dddd DD/MM/YYYY")}
                            </TableCell>
                            <TableCell className={classes.tableCell}>
-                              {reservation.showtime.time}
+                              {reservation.showtime && reservation.showtime.time}
                            </TableCell>
                            <TableCell className={classes.tableCell}>
                               {moment(reservation.created).format("HH:mm a, dddd DD/MM/YYYY")}
@@ -101,7 +102,7 @@ const ReservationsTable = (props) => {
                                  open={data.open}
                                  title={"Ticket Info!"}
                                  handleClose={handleClose}>
-                                 <Ticket user={data.user} ticket={data.reservation} />
+                                 <Ticket user={data.user} ticket={data.reservation}/>
                               </DialogTicket>
                            </TableCell>
                         </TableRow>

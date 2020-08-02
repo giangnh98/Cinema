@@ -1,8 +1,8 @@
-import React from 'react';
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
-import { Bar } from 'react-chartjs-2';
-import { makeStyles } from '@material-ui/styles';
+import React from "react";
+import classnames from "classnames";
+import PropTypes from "prop-types";
+import { Bar } from "react-chartjs-2";
+import { makeStyles } from "@material-ui/styles";
 import {
    Card,
    CardHeader,
@@ -10,20 +10,20 @@ import {
    CardActions,
    Divider,
    Button
-} from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import palette from '../../../../../../theme/palette';
-import { options } from './chart';
+} from "@material-ui/core";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import palette from "../../../../../../theme/palette";
+import { options } from "./chart";
 
 const useStyles = makeStyles(() => ({
    root: {},
    chartContainer: {
       height: 400,
-      position: 'relative'
+      position: "relative"
    },
    actions: {
-      justifyContent: 'flex-end'
+      justifyContent: "flex-end"
    }
 }));
 
@@ -32,15 +32,20 @@ const BestMovies = props => {
    const classes = useStyles();
 
    const data = {
-      labels: bestMovies.length && bestMovies.map(item => item.movie.title.toUpperCase()),
+      labels: bestMovies.length && bestMovies.map(item => {
+         if (item.movie && item.movie.title) {
+            return item.movie.title.toUpperCase();
+         }
+         return "";
+      }),
       datasets: [
          {
-            label: 'This year',
+            label: "This year",
             backgroundColor: palette.primary.main,
             data: bestMovies.map(movie => movie.count)
          },
          {
-            label: 'Last year',
+            label: "Last year",
             backgroundColor: palette.neutral,
             data: [11, 20, 12, 29, 30]
          }
@@ -52,21 +57,21 @@ const BestMovies = props => {
          <CardHeader
             action={
                <Button size="small" variant="text">
-                  Best 5<ArrowDropDownIcon />
+                  Best 5<ArrowDropDownIcon/>
                </Button>
             }
             title="Best Movies"
          />
-         <Divider />
+         <Divider/>
          <CardContent>
             <div className={classes.chartContainer}>
-               <Bar data={data} options={options} />
+               <Bar data={data} options={options}/>
             </div>
          </CardContent>
-         <Divider />
+         <Divider/>
          <CardActions className={classes.actions}>
             <Button color="primary" size="small" variant="text">
-               Overview <ArrowRightIcon />
+               Overview <ArrowRightIcon/>
             </Button>
          </CardActions>
       </Card>

@@ -123,6 +123,8 @@ export class TicketController {
             newTicket.price = price[i];
             newTicket.type = type[i];
             newTicket.seats = seats[i];
+            newTicket.created = new Date();
+            newTicket.updated = new Date();
             newTicket.createdBy = user.id;
             newTicket.updatedBy = user.id;
             const ticket = await this._ticketService.create(newTicket);

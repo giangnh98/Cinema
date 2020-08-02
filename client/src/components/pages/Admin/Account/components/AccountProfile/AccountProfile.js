@@ -27,7 +27,7 @@ const AccountProfile = (props) => {
                     </div>
                     <Avatar
                         className={classes.avatar}
-                        src="https://cdn.24h.com.vn/upload/2-2020/images/2020-06-21/16-1592755417-735-width650height814.jpg"
+                        src="https://img.lovepik.com/free_png/28/79/96/62Z58PICF9880mckYCPyZ_PIC2018.png_860.png"
                     />
                 </div>
             </PortletContent>

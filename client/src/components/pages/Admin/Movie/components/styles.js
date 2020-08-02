@@ -7,6 +7,21 @@ export const AntSwitch = withStyles((theme) => ({
       padding: 0,
       display: "flex"
    },
+   row: {
+      display: 'flex',
+      justifyContent: 'center',
+      width: '100%'
+   },
+   seat: {
+      color: 'rgba(255,255,255,0.7)',
+      borderRadius: 2,
+      width: 25,
+      height: 25,
+      textAlign: 'center',
+      padding: theme.spacing(0.6),
+      margin: theme.spacing(0.5),
+      fontWeight: 600,
+   },
    switchBase: {
       padding: 2,
       color: theme.palette.grey[500],

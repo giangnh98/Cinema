@@ -207,6 +207,7 @@ class Showtime extends React.PureComponent {
          .then(res => {
             if (!res) {
                showErrors("Delete showtime success!", "success");
+               window.location.reload();
             } else {
                showErrors("Delete showtime failure!", "error");
             }

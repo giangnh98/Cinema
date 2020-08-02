@@ -18,6 +18,7 @@ const AdminReservationPage = lazy(() => import(`./components/pages/Admin/Reserva
 const AdminPrebookingPage = lazy(() => import(`./components/pages/Admin/Prebooking/Prebooking`));
 const AdminCinemaPage = lazy(() => import(`./components/pages/Admin/Cinema/Cinema`));
 const AdminMoviePage = lazy(() => import(`./components/pages/Admin/Movie/Movie`));
+const AdminRoomPage = lazy(() => import(`./components/pages/Admin/Room/Room`));
 // Public
 const HomePage = lazy(() => import((`./components/pages/Public/Home/HomePage`)));
 const MoviePage = lazy(() => import(`./components/pages/Public/Movie/MoviePage`));
@@ -126,6 +127,13 @@ const Routes = () => {
                   path="/admin/movies"
                   layout={AdminLayout}
                   component={AdminMoviePage}
+               />
+
+               <PrivateWithLayoutRoute
+                  exact
+                  path="/admin/rooms"
+                  layout={AdminLayout}
+                  component={AdminRoomPage}
                />
 
                <WithLayoutRoute

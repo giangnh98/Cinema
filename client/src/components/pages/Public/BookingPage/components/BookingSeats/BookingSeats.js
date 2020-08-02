@@ -102,7 +102,7 @@ const BookingSeats = (props) => {
                                        seat === 5 ? "rgb(65, 66, 70)" :
                                           "#1A1A1A"
                            }>
-                           {index > seatRows.indexOf(3) ? index : index + 1}
+                           {index}
                         </Box>
                      )}
                </div>

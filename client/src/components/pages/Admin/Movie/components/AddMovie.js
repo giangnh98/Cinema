@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { withStyles, Button, Typography, TextField } from "@material-ui/core";
-import { makeStyles, AntSwitch } from "./styles";
+import { makeStyles } from "./styles";
 import classNames from "classnames";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
