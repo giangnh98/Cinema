@@ -55,7 +55,7 @@ class Showtime extends React.PureComponent {
       super(props);
       this.state = {
          data: [],
-         currentDate: "2020-04-27",
+         currentDate: Date.now(),
          confirmationVisible: false,
          editingFormVisible: false,
          deletedAppointmentId: undefined,
