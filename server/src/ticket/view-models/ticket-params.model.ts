@@ -4,9 +4,16 @@ export class TicketParams {
    @ApiModelPropertyOptional()
    showtime: string;
    @ApiModelPropertyOptional()
-   seats: Array<Array<number>>;
+   seat: string;
    @ApiModelPropertyOptional()
-   type: Array<string>;
+   type: string;
    @ApiModelPropertyOptional()
-   price: Array<number>;
+   price: number;
+   @ApiModelPropertyOptional()
+   seatNo: string;
+}
+
+export class TicketArrayPrams {
+   @ApiModelPropertyOptional({ type: TicketParams, isArray: true })
+   seats: TicketParams[];
 }

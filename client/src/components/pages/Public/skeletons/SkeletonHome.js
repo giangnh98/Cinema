@@ -25,15 +25,15 @@ const SkeletonHome = () => {
             </Typography>
             <Grid container>
                 <Grid item style={{margin: "0 70px 0 60px"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
                 <Grid item style={{margin: "0 70px 0 0"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
                 <Grid item style={{margin: "0 70px 0 0"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
             </Grid>
@@ -42,15 +42,15 @@ const SkeletonHome = () => {
             </Typography>
             <Grid container>
                 <Grid item style={{margin: "0 70px 0 60px"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
                 <Grid item style={{margin: "0 70px 0 0"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
                 <Grid item style={{margin: "0 70px 0 0"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
             </Grid>
@@ -59,15 +59,15 @@ const SkeletonHome = () => {
             </Typography>
             <Grid container style={{paddingBottom: 50}}>
                 <Grid item style={{margin: "0 70px 0 60px"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
                 <Grid item style={{margin: "0 70px 0 0"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
                 <Grid item style={{margin: "0 70px 0 0"}}>
-                    <Skeleton variant="rect" width={400} height={370}/>
+                    <Skeleton variant="rect" width={350} height={370}/>
                     <Skeleton variant="text" width={300} height={30}/>
                 </Grid>
             </Grid>

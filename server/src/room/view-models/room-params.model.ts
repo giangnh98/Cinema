@@ -7,6 +7,4 @@ export class RoomParams {
    name: string;
    @ApiModelPropertyOptional()
    seats: number;
-   @ApiModelPropertyOptional()
-   structure: Array<Array<number>>;
 }

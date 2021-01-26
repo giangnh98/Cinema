@@ -17,7 +17,7 @@ const {
 export const getCinemas = () => async dispatch => {
    dispatch(fetchRequest());
    try {
-      const url = "/api/cinemas";
+      const url = "/api/cinemas/all";
       const response = await fetch(url, {
          method: "GET"
       });

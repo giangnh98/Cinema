@@ -8,7 +8,7 @@ const LoginPage = (props) => {
     const {classes, history} = props;
 
     const handleBack = () => {
-        history.goBack();
+        history.push('/');
     };
 
     return (

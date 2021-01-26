@@ -8,9 +8,10 @@ export class MovieParams {
    @ApiModelProperty() description: string;
    @ApiModelProperty() duration: string;
    @ApiModelProperty() genre: string;
-   @ApiModelProperty() videoId: string;
    @ApiModelProperty() image: string;
    @ApiModelProperty() director: string;
    @ApiModelProperty({ type: String, format: "date-time" }) started?: Date;
-   @ApiModelProperty() category: string;
+   @ApiModelProperty() label: string;
+   @ApiModelProperty() poster: string;
+   @ApiModelProperty() language: string;
 }

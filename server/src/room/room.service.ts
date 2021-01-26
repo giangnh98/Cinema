@@ -16,17 +16,17 @@ export class RoomService extends BaseService<Room> {
    ) {
       super(_roomModel, _mapperService.mapper);
    }
-   
+
    async findAllWithPaginate(pageSize, page, sort): Promise<Room[]> {
       try {
-         const rooms = await this._roomModel.find()
+         const rooms = await this._roomModel.find({ isActive: true })
             .sort(sort).skip(pageSize * page).limit(parseInt(pageSize)).exec();
          return map(rooms, item => item.toJSON() as Room);
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async getAllByCinema(cinema?: string): Promise<Room[]> {
       try {
          const rooms = await this._roomModel.find({ isActive: true }).populate("cinema").exec();

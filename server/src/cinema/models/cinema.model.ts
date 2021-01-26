@@ -1,5 +1,5 @@
 import { BaseModel, schemaOptions } from "../../shared/base.model";
-import { arrayProp, ModelType, prop, Ref } from "typegoose";
+import { ModelType, prop } from "typegoose";
 
 export class Cinema extends BaseModel<Cinema> {
    @prop({ required: [true, "Name must be required"] })

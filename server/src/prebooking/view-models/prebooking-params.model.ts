@@ -4,5 +4,9 @@ import {
 
 export class PrebookingParams {
    @ApiModelProperty() showtime: string;
-   @ApiModelProperty() seats: Array<Array<number>>;
+   @ApiModelProperty() seat: string;
+}
+
+export class PrebookingArrayPrams {
+   @ApiModelProperty({ type: PrebookingParams, isArray: true }) seats: PrebookingParams[];
 }

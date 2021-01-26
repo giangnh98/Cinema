@@ -174,9 +174,8 @@ class Prebooking extends React.Component {
                   },
                   {
                      Header: "Seat",
-                     accessor: "seats",
-                     width: 100,
-                     Cell: e => `${String.fromCharCode(97 + e.original.seats[0]).toUpperCase()}${e.original.seats[1]}`
+                     accessor: "seat",
+                     width: 200,
                   },
                   {
                      Header: "CreatedAt",

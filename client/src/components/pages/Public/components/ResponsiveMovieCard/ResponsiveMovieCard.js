@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom';
 
 const MovieCard = ({movie, classes}) => {
     return (
-        <Link to={`/movie/${movie.id}`} style={{textDecoration: 'none'}}>
+        <Link to={`/movie/${movie.id}?label=${movie.label}`} style={{textDecoration: 'none'}}>
             <Paper className={classes.movieCard} elevation={20}>
                 <div className={classes.infoSection}>
                     <header className={classes.movieHeader}>
@@ -49,7 +49,7 @@ const MovieCard = ({movie, classes}) => {
                 <div
                     className={classes.blurBackground}
                     style={{
-                        backgroundImage: `url(${movie.image})`
+                        backgroundImage: `url(${movie.poster})`
                     }}
                 />
             </Paper>

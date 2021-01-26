@@ -18,7 +18,7 @@ import { InstanceType } from "typegoose";
 export class MovieController {
    constructor(private readonly _movieService: MovieService) {
    }
-   
+
    @Get()
    @ApiResponse({ status: HttpStatus.OK, type: MovieVm, isArray: true })
    @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
@@ -31,33 +31,52 @@ export class MovieController {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
+   @Get('/relations')
+   @ApiResponse({ status: HttpStatus.OK, type: Movie, isArray: true })
+   @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
+   @ApiOperation(GetOperationId(Movie.modelName, "GetMoviesLabel"))
+   async getMoviesSameLabel(
+      @Query("label") label: string,
+      @Query("movieId") movieId: string,
+   ): Promise<Movie[]> {
+      return this._movieService.getMoviesWithSameLabel(label, movieId);
+   }
+
    @Get("/nowShowing")
    @ApiResponse({ status: HttpStatus.OK, type: MovieVm, isArray: true })
    @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
    @ApiOperation(GetOperationId(Movie.modelName, "GetNowShowing"))
    async getNowShowing(): Promise<MovieVm[]> {
       try {
-         const movies = await this._movieService.find({ category: "1", isActive: true });
+         const movies = await this._movieService.find({
+            started: {
+               $lte: new Date()
+            }, isActive: true
+         });
          return this._movieService.map<MovieVm[]>(map(movies, movie => movie.toJSON()), true);
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    @Get("/comingSoon")
    @ApiResponse({ status: HttpStatus.OK, type: MovieVm, isArray: true })
    @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
    @ApiOperation(GetOperationId(Movie.modelName, "GetComingSoon"))
    async getComingSoon(): Promise<MovieVm[]> {
       try {
-         const movies = await this._movieService.find({ category: "0", isActive: true });
+         const movies = await this._movieService.find({
+            started: {
+               $gte: new Date()
+            }, isActive: true
+         });
          return this._movieService.map<MovieVm[]>(map(movies, movie => movie.toJSON()), true);
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    @Get("/paginate")
    @Auth(UserRole.SUPERADMIN, UserRole.ADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: MovieVm, isArray: true })
@@ -92,20 +111,20 @@ export class MovieController {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    @Get(":id")
    @ApiResponse({ status: HttpStatus.OK, type: MovieVm })
    @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
    @ApiOperation(GetOperationId(Movie.modelName, "GetById"))
    async getById(@Param("id") id: string): Promise<MovieVm> {
       try {
-         const movie = await this._movieService.findById(id);
-         return this._movieService.map<MovieVm>(movie.toJSON() as Movie);
+         const movie = await this._movieService.getMovieById(id);
+         return this._movieService.map<MovieVm>(movie);
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    @Post()
    @Auth(UserRole.ADMIN, UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.CREATED, type: MovieVm })
@@ -118,7 +137,7 @@ export class MovieController {
             throw new HttpException(`${field} is required`, HttpStatus.BAD_REQUEST);
          }
       });
-      
+
       try {
          const curUser = user.toJSON() as User;
          const newMovie = await this._movieService.createMovie(movieParams, curUser.id);
@@ -126,9 +145,9 @@ export class MovieController {
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      
+
    }
-   
+
    @Put(":id")
    @Auth(UserRole.ADMIN, UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: MovieVm })
@@ -144,13 +163,13 @@ export class MovieController {
             throw new HttpException(`${field} is required`, HttpStatus.BAD_REQUEST);
          }
       });
-      
+
       const curUser = user.toJSON() as User;
       const movie = await this._movieService.updateMovie(movieParams, id, curUser.id);
-      
+
       return this._movieService.map<MovieVm>(movie);
    }
-   
+
    @Delete(":id")
    @Auth(UserRole.ADMIN, UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: MovieVm })
@@ -158,7 +177,7 @@ export class MovieController {
    async delete(@Param("id") id: string, @CurrentUser() user: InstanceType<User>): Promise<MovieVm> {
       const curUser = user.toJSON() as User;
       const movie = await this._movieService.deleteMovie(id, curUser.id);
-      
+
       return this._movieService.map<MovieVm>(movie);
    }
 }

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { BaseService } from "../shared/base.service";
 import { Movie } from "./models/movie.model";
 import { InjectModel } from "@nestjs/mongoose";
-import { ModelType } from "typegoose";
+import { InstanceType, ModelType } from "typegoose";
 import { MapperService } from "../shared/mapper/mapper.service";
 import { MovieParams } from "./view-models/movie-params.model";
 import { MovieVm } from "./view-models/movie-vm.model";
@@ -17,7 +17,7 @@ export class MovieService extends BaseService<Movie> {
    ) {
       super(_movieModel, _mapperService.mapper);
    }
-   
+
    async findWithPaginate(
       pageSize,
       page,
@@ -46,35 +46,74 @@ export class MovieService extends BaseService<Movie> {
       try {
          const movies = await this._movieModel.find(filters)
             .sort(sort).skip(pageSize * page).limit(parseInt(pageSize)).exec();
-   
+
          return this.map<MovieVm[]>(map(movies, movie => movie.toJSON() as Movie));
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
+   async getMoviesWithSameLabel(label: string, movieId: string): Promise<Movie[]> {
+      try {
+         const movies = await this.find({
+            label, isActive: true, _id: {
+               $ne: movieId
+            }
+         });
+         return movies.map(movie => movie.toJSON() as Movie);
+      } catch (e) {
+         throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   async getMovieById(movieId: string): Promise<Movie> {
+      let exists: InstanceType<Movie> = null;
+      try {
+         exists = await this._movieModel.findOne({ _id: movieId, isActive: true });
+      } catch (e) {
+         throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      if (!exists) {
+         throw new HttpException("Movie does not exists", HttpStatus.BAD_REQUEST);
+      }
+
+      return exists.toJSON() as Movie;
+   }
+
    async createMovie(movieParams: MovieParams, id: string): Promise<Movie> {
-      const { title, region, description, genre, videoId, image, director, duration, started } = movieParams;
+      const {
+         title,
+         region,
+         description,
+         genre,
+         image,
+         director,
+         duration,
+         started,
+         poster,
+         label,
+         language
+      } = movieParams;
       const updatedBy = id;
       const createdBy = id;
       const newStarted = new Date(started.toString());
-      const currentDate = new Date();
-      const category = (newStarted > currentDate) ? "0" : "1";
-      
+
       const newMovie = this.createModel();
       newMovie.title = title;
       newMovie.region = region;
       newMovie.description = description;
       newMovie.genre = genre;
       newMovie.started = newStarted;
-      newMovie.videoId = videoId;
       newMovie.image = image;
       newMovie.director = director;
       newMovie.duration = duration;
       newMovie.updatedBy = updatedBy;
       newMovie.createdBy = createdBy;
-      newMovie.category = category;
-      
+      newMovie.poster = poster;
+      newMovie.label = label;
+      newMovie.language = language;
+
       try {
          const result = await this.create(newMovie);
          return result.toJSON() as Movie;
@@ -82,65 +121,76 @@ export class MovieService extends BaseService<Movie> {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async updateMovie(movieParams: MovieParams, id: string, userId: string): Promise<Movie> {
-      const { description, director, duration, genre, image, region, started, title, videoId } = movieParams;
-      
+      const {
+         description,
+         director,
+         duration,
+         genre,
+         image,
+         region,
+         started,
+         title,
+         label,
+         language,
+         poster
+      } = movieParams;
+
       let movie;
       try {
-         movie = await this.findById(id);
+         movie = await this.getMovieById(id);
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      
+
       if (!movie) {
          throw new HttpException("Movie doesn't exist", HttpStatus.BAD_REQUEST);
       }
-   
+
       const newStarted = new Date(started.toString());
-      const currentDate = new Date();
-      const category = (newStarted > currentDate) ? "0" : "1";
-      
+
       try {
+         movie.label = label;
+         movie.language = language;
+         movie.poster = poster;
          movie.description = description;
          movie.director = director;
          movie.duration = duration;
          movie.genre = genre;
          movie.image = image;
          movie.started = newStarted;
-         movie.category = category;
          movie.region = region;
          movie.started = started;
          movie.title = title;
-         movie.videoId = videoId;
          movie.updatedBy = userId;
          movie.updated = new Date();
-         
+
          const movieUpdate = await this.update(id, movie);
-         
+
          return movieUpdate.toJSON() as Movie;
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async deleteMovie(id: string, userId: string): Promise<Movie> {
       let movie;
       try {
-         movie = this.findById(id);
+         movie = await this.getMovieById(id);
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      
+
       if (!movie) {
          throw new HttpException("Movie doesn't exist", HttpStatus.BAD_REQUEST);
       }
-      
+
       try {
          movie.isActive = false;
          movie.updatedBy = userId;
          movie.updated = new Date();
-         
+
          const movieDelete = await this.update(id, movie);
          return movieDelete.toJSON() as Movie;
       } catch (e) {

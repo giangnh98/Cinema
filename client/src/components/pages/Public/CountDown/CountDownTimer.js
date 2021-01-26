@@ -23,23 +23,26 @@ const renderer = ({minutes, seconds, completed}) => {
                     flexDirection: "column",
                 }}>
                     <Typography variant="h4" style={{
-                        marginRight: 20
+                        marginRight: 20,
+                        fontSize: 15
                     }}>
                         Time for checkout
                     </Typography>
-                    <Typography variant="h6">
+                    <Typography variant="h6" style={{
+                        fontSize: 12
+                    }}>
                         ( minutes : seconds )
                     </Typography>
                 </Box>
                 <Box style={{
                     backgroundColor: '#03A9F4',
-                    width: '220px',
+                    width: '100px',
                     display: "flex",
                     justifyContent: "center",
                     padding: '8px',
                     borderRadius: '10px',
                 }}>
-                    <Typography variant="h1" component="h2">
+                    <Typography variant="h4" component="h4">
                         {minutes} : {seconds}
                     </Typography>
                 </Box>

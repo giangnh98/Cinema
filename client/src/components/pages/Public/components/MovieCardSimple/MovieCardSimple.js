@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Typography, withStyles} from '@material-ui/core';
-import {Link} from 'react-router-dom';
+import {Typography, withStyles, Link} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
@@ -11,7 +10,7 @@ const styles = theme => ({
     card: {
         maxWidth: 400,
         position: 'relative',
-        maxHeight: 400,
+        maxHeight: 500,
         overflow: 'hidden',
         backgroundColor: 'transparent',
         borderRadius: 10,
@@ -19,7 +18,7 @@ const styles = theme => ({
         boxShadow: 'unset',
     },
     media: {
-        height: 400,
+        height: 500,
         transition: '500ms ease-in-out',
         overflow: 'hidden',
         '&:hover': {
@@ -42,7 +41,7 @@ const MovieCardSimple = props => {
     const {movie, classes} = props;
 
     return (
-        <Link to={`movie/${movie.id}`} style={{textDecoration: 'none'}}>
+        <Link href={`/movie/${movie.id}?label=${movie.label}`} style={{textDecoration: 'none'}}>
             <Card className={classes.card}>
                 <CardActionArea>
                     <CardMedia

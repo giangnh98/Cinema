@@ -13,6 +13,10 @@ import { RoomModule } from "./room/room.module";
 import { TicketModule } from "./ticket/ticket.module";
 import { ShowtimeModule } from "./showtime/showtime.module";
 import { PrebookingModule } from "./prebooking/prebooking.module";
+import { ActorModule } from './actor/actor.module';
+import { CastModule } from './cast/cast.module';
+import { TrailerModule } from './trailer/trailer.module';
+import { SeatModule } from './seat/seat.module';
 
 @Module({
    imports: [
@@ -30,6 +34,10 @@ import { PrebookingModule } from "./prebooking/prebooking.module";
       TicketModule,
       ShowtimeModule,
       PrebookingModule,
+      ActorModule,
+      CastModule,
+      TrailerModule,
+      SeatModule,
    ],
    controllers: [AppController],
    providers: [AppService, JwtStrategyService]

@@ -9,8 +9,6 @@ export class Room extends BaseModel<Room> {
    name: string;
    @prop({ required: [true, "Total seat is required"] })
    seats: number;
-   @prop({ required: [true, "Structure room is required"] })
-   structure: Array<Array<number>>;
    
    static get model(): ModelType<Room> {
       return new Room().getModelForClass(Room, { schemaOptions });

@@ -26,7 +26,7 @@ export class UserService extends BaseService<User> {
    ) {
       super(_userModel, _mapperService.mapper);
    }
-   
+
    async fetchUsers(
       pageSize,
       page,
@@ -60,50 +60,50 @@ export class UserService extends BaseService<User> {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async updateUser(userParams: UserParams, id: string, userId: string): Promise<LoginResponseVm> {
       const { password, name, phone } = userParams;
-      
+
       try {
-         const user = await this.findById(id);
-         
+         const user = await this._userModel.findOne({ _id: id, isActive: true });
+
          if (user) {
-            
+
             user.name = name;
             user.phone = phone;
             user.updated = new Date();
             user.updatedBy = userId;
-            
+
             if (password) {
                const salt = await genSalt(10);
-               
+
                user.password = await hash(password, salt);
             }
-            
+
             const updateUser = await this.update(id, user);
-            
+
             const payload: JwtPayload = {
                email: updateUser.email,
                role: updateUser.role
             };
-            
+
             const token = await this._authService.signPayload(payload);
             const userVm: UserVm = await this.map<UserVm>(user.toJSON());
-            
+
             return {
                token,
                user: userVm
             };
          }
-         
+
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async createUser(registerVm: RegisterVm, userId: string): Promise<User> {
       const { email, password, name, phone } = registerVm;
-      
+
       const newUser = this.createModel();
       newUser.email = email;
       newUser.name = name;
@@ -111,10 +111,10 @@ export class UserService extends BaseService<User> {
       newUser.role = UserRole.ADMIN;
       newUser.createdBy = userId;
       newUser.updatedBy = userId;
-      
+
       const salt = await genSalt(10);
       newUser.password = await hash(password, salt);
-      
+
       try {
          const result = await this.create(newUser);
          return result.toJSON() as User;
@@ -122,18 +122,18 @@ export class UserService extends BaseService<User> {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async register(registerVm: RegisterVm): Promise<User> {
       const { email, password, name, phone } = registerVm;
-      
+
       const newUser = this.createModel();
       newUser.email = email;
       newUser.name = name;
       newUser.phone = phone;
-      
+
       const salt = await genSalt(10);
       newUser.password = await hash(password, salt);
-      
+
       try {
          const result = await this.create(newUser);
          return result.toJSON() as User;
@@ -141,52 +141,52 @@ export class UserService extends BaseService<User> {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async login(loginVm: LoginVm): Promise<LoginResponseVm> {
       const { email, password } = loginVm;
-      
-      const user = await this.findOne({ email });
+
+      const user = await this.findOne({ email, isActive: true });
       if (!user) {
          throw new HttpException("Invalid credentials", HttpStatus.BAD_REQUEST);
       }
-      
+
       const isMatch = await compare(password, user.password);
       if (!isMatch) {
          throw new HttpException("Invalid credentials", HttpStatus.BAD_REQUEST);
       }
-      
+
       const payload: JwtPayload = {
          email: email,
          role: user.role
       };
-      
+
       const token = await this._authService.signPayload(payload);
       const userVm: UserVm = await this.map<UserVm>(user.toJSON());
-      
+
       return {
          token,
          user: userVm
       };
    }
-   
+
    async deleteUser(id: string, userId: string): Promise<User> {
       let user;
       try {
-         user = await this.findById(id);
+         user = await this._userModel.findOne({ _id: id, isActive: true });
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      
+
       if (!user) {
          throw new HttpException("User does not exist", HttpStatus.BAD_REQUEST);
       }
-      
+
       user.isActive = false;
       user.updatedBy = userId;
       user.updated = new Date();
       try {
          const userDelete = await this.update(id, user);
-         
+
          return userDelete.toJSON() as User;
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);

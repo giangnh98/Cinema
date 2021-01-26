@@ -30,5 +30,5 @@ export const vnCity = [
    "Thủ Dầu Một",
    "Vinh",
    "Vĩnh Long",
-   "Vũng Tàu"
+   "Vũng Tàu",
 ];

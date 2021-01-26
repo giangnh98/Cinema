@@ -20,7 +20,7 @@ import { map } from "lodash";
 export class UserController {
    constructor(private readonly _userService: UserService) {
    }
-   
+
    @Get()
    @Auth(UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: UserVm, isArray: true })
@@ -56,7 +56,7 @@ export class UserController {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    @Get("/all")
    @Auth(UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: UserVm, isArray: true })
@@ -69,7 +69,7 @@ export class UserController {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    @Get("auth")
    @Auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.GUEST)
    @ApiResponse({ status: HttpStatus.OK, type: UserVm })
@@ -79,30 +79,30 @@ export class UserController {
       if (!user) {
          throw new HttpException("You do not have permission to access this resource", HttpStatus.UNAUTHORIZED);
       }
-      
+
       return this._userService.map<UserVm>(user.toJSON());
    }
-   
+
    @Get(":id")
    @Auth(UserRole.SUPERADMIN, UserRole.ADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: UserVm })
    @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
    async getUserById(@Param("id") id: string): Promise<UserVm> {
       let user;
-      
+
       try {
-         user = await this._userService.findById(id);
+         user = await this._userService.findOne({ _id: id, isActive: true });
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      
+
       if (!user) {
          throw new HttpException("User does not exist", HttpStatus.BAD_REQUEST);
       }
-      
+
       return this._userService.map<UserVm>(user.toJSON());
    }
-   
+
    @Get("/size/:pageSize")
    @Auth(UserRole.SUPERADMIN, UserRole.ADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: Number })
@@ -115,8 +115,8 @@ export class UserController {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
-   
+
+
    @Post()
    @Auth(UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.CREATED, type: UserVm })
@@ -130,40 +130,40 @@ export class UserController {
       });
       const curUser = user.toJSON() as User;
       const newUser = await this._userService.createUser(registerVm, curUser.id);
-      
+
       return this._userService.map<UserVm>(newUser);
    }
-   
+
    @Post("register")
    @ApiResponse({ status: HttpStatus.CREATED, type: UserVm })
    @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
    @ApiOperation(GetOperationId(User.modelName, "Register"))
    async register(@Body() registerVm: RegisterVm): Promise<UserVm> {
       const { email, password } = registerVm;
-      
+
       if (!email) {
          throw new HttpException("Username is required", HttpStatus.BAD_REQUEST);
       }
-      
+
       if (!password) {
          throw new HttpException("Password is required", HttpStatus.BAD_REQUEST);
       }
-      
+
       let exist;
       try {
          exist = await this._userService.findOne({ email });
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      
+
       if (exist) {
          throw new HttpException(`${email} exists`, HttpStatus.BAD_REQUEST);
       }
-      
+
       const newUser = await this._userService.register(registerVm);
       return this._userService.map<UserVm>(newUser);
    }
-   
+
    @Post("login")
    @ApiResponse({ status: HttpStatus.CREATED, type: LoginResponseVm })
    @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: ApiException })
@@ -175,10 +175,10 @@ export class UserController {
             throw new HttpException(`${field} is required`, HttpStatus.BAD_REQUEST);
          }
       });
-      
+
       return this._userService.login(loginVm);
    }
-   
+
    @Put(":id")
    @Auth(UserRole.GUEST, UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: LoginResponseVm })
@@ -194,11 +194,11 @@ export class UserController {
             throw new HttpException(`${field} is required`, HttpStatus.BAD_REQUEST);
          }
       });
-      
+
       const curUser = user.toJSON() as User;
       return this._userService.updateUser(userParams, id, curUser.id);
    }
-   
+
    @Delete(":id")
    @Auth(UserRole.SUPERADMIN)
    @ApiResponse({ status: HttpStatus.OK, type: UserVm })
@@ -206,7 +206,7 @@ export class UserController {
    async delete(@Param("id") id: string, @CurrentUser() user: InstanceType<User>): Promise<UserVm> {
       const curUser = user.toJSON() as User;
       const userDelete = await this._userService.deleteUser(id, curUser.id);
-      
+
       return this._userService.map<UserVm>(userDelete);
    }
 }

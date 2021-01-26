@@ -44,6 +44,10 @@ export abstract class BaseService<T extends Typegoose> {
    async findWithPopulate(filter = {}, populate = {}): Promise<InstanceType<T>[]> {
       return this._model.find(filter).populate(populate).exec();
    }
+
+   async findOnePopulate(filter = {} , populate = {}): Promise<InstanceType<T>> {
+      return this._model.findOne(filter).populate(populate);
+   }
    
    async findWithPopulateAndSort(filter = {}, populate = {}, sort = {}): Promise<InstanceType<T>[]> {
       return this._model.find(filter).sort(sort).populate(populate).exec();

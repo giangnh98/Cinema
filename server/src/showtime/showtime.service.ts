@@ -15,9 +15,42 @@ export class ShowtimeService extends BaseService<Showtime> {
    ) {
       super(_showtimeModel, _mapperService.mapper);
    }
-   
-   async findShowtimesByMovieId(movie: string): Promise<Showtime[]> {
+
+   async getShowById(showId: string): Promise<Showtime> {
       try {
+         const showtime = await this._showtimeModel.findOne({ _id: showId, isActive: true }).populate({
+            path: "room movie",
+            populate: {
+               path: "cinema",
+               model: "Cinema"
+            }
+         });
+         return showtime.toJSON() as Showtime;
+      } catch (e) {
+         throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   async getShowtimesByDate(movie: string): Promise<any> {
+      try {
+         const showtimes = await this.find({ movie, isActive: true });
+         const items = showtimes.map(showtime => (showtime.toJSON() as Showtime).released.toString());
+         return items.filter(function (item, pos) {
+            return items.indexOf(item) == pos;
+         });
+      } catch (e) {
+         throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   async findShowtimesByMovieId(movie: string): Promise<any> {
+      try {
+         const groupBy = (xs, key) => {
+            return xs.reduce((rv, x) => {
+               (rv[x[key]] = rv[x[key]] || []).push(x);
+               return rv;
+            }, {});
+         };
          const showtimes = await this.findWithPopulate({ movie, isActive: true }, {
             path: "room movie",
             populate: {
@@ -25,12 +58,21 @@ export class ShowtimeService extends BaseService<Showtime> {
                model: "Cinema"
             }
          });
-         return map(showtimes, showtime => showtime.toJSON());
+         let results = showtimes.map(showtime => {
+            const room: any = showtime.room;
+            return {
+               ...Showtime,
+               room: {},
+               cinema: room.cinema
+            };
+         });
+         results = groupBy(showtimes, 'room.cinema.name');
+         return results;
       } catch (e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   
+
    async findAll(): Promise<Showtime[]> {
       try {
          const showtimes = await this._showtimeModel.find({ isActive: true })

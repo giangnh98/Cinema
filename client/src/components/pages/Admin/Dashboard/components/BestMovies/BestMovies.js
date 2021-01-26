@@ -43,11 +43,6 @@ const BestMovies = props => {
             label: "This year",
             backgroundColor: palette.primary.main,
             data: bestMovies.map(movie => movie.count)
-         },
-         {
-            label: "Last year",
-            backgroundColor: palette.neutral,
-            data: [11, 20, 12, 29, 30]
          }
       ]
    };

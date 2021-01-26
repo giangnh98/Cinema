@@ -12,16 +12,18 @@ export class Movie extends BaseModel<Movie> {
    duration: string;
    @prop({ required: [true, "Genre is required"] })
    genre: string;
-   @prop({ required: [true, "VideoId is required"] })
-   videoId: string;
    @prop({ required: [true, "Image is required"] })
    image: string;
    @prop({ required: [true, "Director is required"] })
    director: string;
+   @prop({ required: [true, "Label is required"] })
+   label: string;
+   @prop({ required: [true, "Poster is required"] })
+   poster: string;
+   @prop({ required: [true, "Language is required"] })
+   language: string;
    @prop()
    started?: Date;
-   @prop({ required: [true, "Category is required"] })
-   category: string;
    
    static get model(): ModelType<Movie> {
       return new Movie().getModelForClass(Movie, { schemaOptions });

@@ -26,7 +26,7 @@ const NotFound = lazy(() => import(`./components/pages/Public/NotFound/NotFound`
 const MovieCategoryPage = lazy(() => import(`./components/pages/Public/MovieCategoryPage/MovieCategoryPage`));
 const Dashboard = lazy(() => import(`./components/pages/Public/Dashboard/Dashboard`));
 const CinemaPage = lazy(() => import(`./components/pages/Public/Cinema/CinemasPage`));
-const BookingPage = lazy(() => import(`./components/pages/Public/BookingPage/BookingPage`));
+const BookingPage = lazy(() => import(`./components/pages/Public/BookingPage/BookingPage2`));
 
 const Routes = () => {
    return (
@@ -46,16 +46,16 @@ const Routes = () => {
 
                <WithLayoutRoute
                   exact
-                  path="/movie/booking/:id"
+                  path="/movie/booking/:showId/:roomId"
                   layout={PublicLayout}
                   component={BookingPage}
+                  layoutProps={{ withFooter: false }}
                />
 
                <WithLayoutRoute
                   exact
                   path="/movie/:id"
                   layout={PublicLayout}
-                  layoutProps={{ withFooter: false }}
                   component={MoviePage}
                />
 

@@ -24,7 +24,7 @@ export const actions = {
       return { type: UPDATE_SHOWTIME_SUCCESS };
    },
    deleteShowtimeSuccess: () => {
-      return { DELETE_SHOWTIME_SUCCESS };
+      return { type: DELETE_SHOWTIME_SUCCESS };
    },
    setShowtime: (showtime) => {
       return { type: GET_SHOWTIME, payload: showtime };

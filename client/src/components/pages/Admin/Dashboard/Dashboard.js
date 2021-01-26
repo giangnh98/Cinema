@@ -91,7 +91,7 @@ class Dashboard extends Component {
                      />
                   </Grid>
                   <Grid item lg={4} md={6} xl={3} xs={12}>
-                     <UsersByDevice/>
+                     <UsersByDevice bestMovies={this.getBestMovies(tickets, movies, 3)} />
                   </Grid>
                </Grid>
             </div>

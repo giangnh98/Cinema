@@ -1,142 +1,354 @@
-import React from "react";
-import { makeStyles } from "@material-ui/styles";
-import { Box, Button, Grid, Typography } from "@material-ui/core";
-import { PayPalButton } from "react-paypal-button-v2";
-import setAuthHeaders from "../../../../../../ultils/setAuthToken";
+import React from 'react';
+import { makeStyles } from '@material-ui/styles';
+import { Button, Grid, Typography } from '@material-ui/core';
+import { PayPalButton } from 'react-paypal-button-v2';
+import { ToTitleCase } from '../../../../../../ultils/utils';
+import setAuthHeaders from '../../../../../../ultils/setAuthToken';
+import moment from 'moment';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CountDownTimer from '../../../CountDown/CountDownTimer';
+import {
+  TYPE_LOVER_LEFT,
+  TYPE_LOVER_RIGHT,
+  TYPE_NORMAL,
+  TYPE_VIP,
+} from '../SeatView/SeatSelectRegular';
 
-const useStyles = makeStyles(theme => ({
-   bannerTitle: {
-      fontSize: theme.spacing(1.4),
-      textTransform: "uppercase",
-      color: "rgb(93, 93, 97)",
-      marginBottom: theme.spacing(1)
-   },
-   bannerContent: {
-      fontSize: theme.spacing(2),
-      textTransform: "capitalize",
-      color: theme.palette.common.white
-   },
-   [theme.breakpoints.down("sm")]: {
-      hideOnSmall: {
-         display: "none"
-      }
-   }
+const useStyles = makeStyles((theme) => ({
+  tableRet: {
+    width: '100%',
+  },
+  thumImg: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    textAlign: 'center',
+  },
+  img: {
+    width: 100,
+    height: 'auto',
+  },
+  order_tList: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
+  mount: {
+    '&:after': {
+      content: '',
+      display: 'block',
+      clear: 'both',
+    },
+  },
+  order_Lbox2: {
+    display: 'inline-block',
+    marginLeft: '20px',
+    verticalAlign: 'middle',
+  },
+  order_title: {
+    display: 'block',
+    marginBottom: '15px',
+    marginTop: 10,
+    fontSize: '20px',
+    color: 'white',
+  },
+  title: {
+    fontSize: 12,
+    color: 'white',
+    marginLeft: 10,
+  },
+  bg_none: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingLeft: 0,
+    background: 'none',
+  },
+  sum: {
+    paddingRight: '50px',
+  },
 }));
 
 export default function BookingCheckout(props) {
-   const classes = useStyles(props);
-   const {
-      user,
-      showtime,
-      selectedSeats,
-      onBookSeats,
-      setInversion,
-      onCancelSeats
-   } = props;
+  const classes = useStyles(props);
+  const {
+    movie,
+    selectedSeats,
+    showtime,
+    screen,
+    onBack,
+    onNext,
+    cinema,
+    timeForCheckout,
+  } = props;
 
-   const getPrice = ([indexRow, indexCol]) => {
-      const { room: { structure } } = showtime;
-      if (structure[indexRow][indexCol] === 1)
-         return "normal";
-      if (structure[indexRow][indexCol] === 2)
-         return "vip";
-      if (structure[indexRow][indexCol] === 6)
-         return "couple";
-   };
+  const convertTime = () => {
+    const totalMinutes = movie.duration;
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    const times = showtime.time.split(':');
+    let rhs = hours + parseInt(times[0]);
+    let rms = minutes + parseInt(times[1]);
+    if (rms > 60) {
+      rms -= 60;
+      rhs += 1;
+    }
+    if (rhs > 24) {
+      rhs -= 24;
+    }
+    rhs = rhs > 9 ? `${rhs}` : `0${rhs}`;
+    rms = rms > 0 ? `${rms}` : `0${rms}`;
+    return `${rhs}:${rms}`;
+  };
 
-   const calculatePrice = () => {
-      const initialReturn = { price: [], type: [], totalPrice: 0 };
-      const { seatPrice = {} } = showtime;
+  const getSeatsNo = () => {
+    return selectedSeats.map((it) => {
+      return `${String.fromCharCode(97 + it.seatNo - 1).toUpperCase()}${
+        it.point.y
+      }`;
+    });
+  };
 
-      const totalPrice = selectedSeats
-         .map(seat => seatPrice[getPrice(seat)])
-         .reduce((accumulator, currentValue) => {
-            return accumulator + currentValue;
-         }, 0);
+  const price = () => {
+    return selectedSeats.reduce((accumulator, currentValue) => {
+      return accumulator + getPriceSeat(currentValue.type);
+    }, 0);
+  };
 
-      const price = selectedSeats
-         .map(seat => seatPrice[getPrice(seat)]);
+  const getPriceSeat = (seatType) => {
+    return seatType === TYPE_NORMAL
+      ? showtime.seatPrice['normal']
+      : seatType === TYPE_LOVER_LEFT || seatType === TYPE_LOVER_RIGHT
+      ? showtime.seatPrice['couple']
+      : seatType === TYPE_VIP
+      ? showtime.seatPrice['vip']
+      : 0;
+  };
 
-      const type = selectedSeats.map(seat => getPrice(seat));
+  const getTypeSeat = (seatType) => {
+    return seatType === TYPE_NORMAL
+      ? 'normal'
+      : seatType === TYPE_LOVER_LEFT || seatType === TYPE_LOVER_RIGHT
+      ? 'couple'
+      : seatType === TYPE_VIP
+      ? 'vip'
+      : 'normal';
+  };
 
-      return { ...initialReturn, price, type, totalPrice };
-   };
+  const tickets = () => {
+    return selectedSeats.map((it) => {
+      return {
+        showtime: showtime.id,
+        seat: it.id,
+        price: getPriceSeat(it.type),
+        type: getTypeSeat(it.type),
+        seatNo: `${String.fromCharCode(97 + it.seatNo - 1).toUpperCase()}${
+          it.point.y
+        }`,
+      };
+    });
+  };
 
-   const { price, totalPrice, type } = calculatePrice();
-
-   return (
-      <Box marginTop={2} bgcolor="rgb(18, 20, 24)">
-         <Grid container>
-            <Grid item xs={8} md={10}>
-               <Grid container spacing={3} style={{ padding: 20 }}>
-                  {user && user.name && (
-                     <Grid item className={classes.hideOnSmall}>
-                        <Typography className={classes.bannerTitle}>Name</Typography>
-                        <Typography className={classes.bannerContent}>
-                           {user.name}
+  return (
+    <Grid container direction="column" justify="center" alignItems="center">
+      <Typography variant="h4" component="h4">
+        Order / Payment
+      </Typography>
+      <CountDownTimer timer={timeForCheckout} />
+      <Grid
+        item
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+        style={{
+          backgroundColor: 'rgb(18, 20, 24)',
+          margin: '20px 0px',
+          padding: 20,
+        }}
+      >
+        <table
+          border="2"
+          className={classes.tableRet}
+          style={{
+            borderCollapse: 'collapse',
+            borderSpacing: 0,
+          }}
+        >
+          <colgroup>
+            <col style={{ width: 784 }} />
+            <col style={{ width: 196 }} />
+          </colgroup>
+          <tfoot>
+            <tr>
+              <td colSpan={2}>
+                <dl
+                  style={{
+                    display: 'block',
+                    marginBlockStart: '1em',
+                    marginBlockEnd: '1em',
+                    marginInlineStart: 0,
+                    marginInlineEnd: 0,
+                  }}
+                  className={classes.mount}
+                >
+                  <dt
+                    style={{
+                      float: 'left',
+                      fontSize: 18,
+                      padding: '10px 0px 20px 10px',
+                    }}
+                  >
+                    Total amount ordered :
+                  </dt>
+                  <dd
+                    style={{
+                      float: 'right',
+                    }}
+                    className={classes.sum}
+                  >
+                    <em>
+                      <strong>
+                        <Typography variant="h4" component="h4">
+                          {price()} {'USD'}
                         </Typography>
-                     </Grid>
-                  )}
-                  <Grid item>
-                     <Typography className={classes.bannerTitle}>Tickets</Typography>
-                     {selectedSeats.length > 0 ? (
-                        <Typography className={classes.bannerContent}>
-                           {selectedSeats.length} tickets
-                        </Typography>
-                     ) : (
-                        <Typography className={classes.bannerContent}>0</Typography>
-                     )}
-                  </Grid>
-                  <Grid item>
-                     <Typography className={classes.bannerTitle}>Price</Typography>
-                     <Typography className={classes.bannerContent}>
-                        {totalPrice} &euro;
-                     </Typography>
-                  </Grid>
-               </Grid>
-            </Grid>
-            <Grid
-               item
-               xs={4}
-               md={2}
-               style={{
-                  color: "rgb(120, 205, 4)",
-                  background: "black",
-                  display: "flex"
-               }}>
-               <Button
-                  color="inherit"
-                  fullWidth
-                  onClick={() => onCancelSeats()}>
-                  Cancel
-               </Button>
-            </Grid>
-         </Grid>
-         <Grid container justify="center"
-               alignItems="center">
-            <PayPalButton
-               amount={`${totalPrice}`}
-               // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-               onSuccess={(details, data) => {
-                  onBookSeats();
-                  setInversion(true);
-                  // OPTIONAL: Call your server to save the transaction
-                  return fetch("/api/tickets", {
-                     method: "POST",
-                     headers: setAuthHeaders({
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                     }),
-                     body: JSON.stringify({
-                        showtime: showtime.id,
-                        seats: selectedSeats,
-                        type: type,
-                        price: price
-                     })
-                  });
-               }}
-            />
-         </Grid>
-      </Box>
-   );
+                      </strong>
+                    </em>
+                  </dd>
+                </dl>
+              </td>
+            </tr>
+          </tfoot>
+          <tbody>
+            <tr>
+              <td
+                style={{
+                  display: 'flex',
+                  padding: 10,
+                }}
+              >
+                <span className={classes.thumImg}>
+                  <img
+                    className={classes.img}
+                    src={movie.image}
+                    alt={movie.title}
+                  />
+                </span>
+                <div className={classes.order_Lbox2}>
+                  <strong className={classes.order_title}>
+                    {ToTitleCase(movie.title)} (2D Vietsub)
+                  </strong>
+                  <ul
+                    style={{
+                      listStyle: 'none',
+                      marginBlockStart: '1em',
+                      marginBlockEnd: '1em',
+                      marginInlineStart: 0,
+                      marginInlineEnd: 0,
+                      paddingInlineStart: 0,
+                    }}
+                    className={classes.order_tList}
+                  >
+                    <li className={classes.bg_none}>
+                      <em>Show date : </em>
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        className={classes.title}
+                      >
+                        {moment(showtime.released).format('DD/MM/YYYY (ddd)')}
+                      </Typography>
+                    </li>
+                    <li className={classes.bg_none}>
+                      <em>Showtimes : </em>
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        className={classes.title}
+                      >
+                        {`${showtime.time} ~ ${convertTime()}`}
+                      </Typography>
+                    </li>
+                    <li className={classes.bg_none}>
+                      <em>Cinema : </em>
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        className={classes.title}
+                      >
+                        {cinema ? cinema : 'Cantavil'}
+                      </Typography>
+                    </li>
+                    <li className={classes.bg_none}>
+                      <em>Cinema room : </em>
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        className={classes.title}
+                      >
+                        {screen}
+                      </Typography>
+                    </li>
+                    <li className={classes.bg_none}>
+                      <em>Seats : </em>
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        className={classes.title}
+                      >
+                        {getSeatsNo().join(', ')}
+                      </Typography>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+              <td>
+                <em>
+                  <strong>
+                    <Typography
+                      variant="h4"
+                      component="h4"
+                      style={{ textAlign: 'center' }}
+                    >
+                      {price()} {'USD'}
+                    </Typography>
+                  </strong>
+                </em>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </Grid>
+      <Grid item container direction="row" alignItems="center">
+        <Grid item xs={6}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            startIcon={<ArrowBackIcon />}
+            onClick={onBack}
+          >
+            back
+          </Button>
+        </Grid>
+        <Grid item xs={6}>
+          <PayPalButton
+            amount={`${price()}`}
+            // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+            onSuccess={(details, data) => {
+              onNext();
+              // OPTIONAL: Call your server to save the transaction
+              return fetch('/api/tickets', {
+                method: 'POST',
+                headers: setAuthHeaders({
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                }),
+                body: JSON.stringify({ seats: tickets() }),
+              });
+            }}
+          />
+        </Grid>
+      </Grid>
+    </Grid>
+  );
 }

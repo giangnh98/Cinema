@@ -65,7 +65,7 @@
   height: 0;
   position: relative;
   padding-bottom: 56.25%;
-  background-color: #333;
+  background-color: #000000;
   animation-timing-function: ease-out;
   animation-duration: 0.3s;
   animation-name: modal-video-inner;
@@ -85,17 +85,18 @@
   top: 0;
   left: 0;
   width: 100%;
+  margin-top: 50px;
   height: 100%;
 }
 
 .modal-video-close-btn {
   position: absolute;
   z-index: 2;
-  top: -35px;
-  right: -35px;
+  top: 15px;
+  right: 10px;
   display: inline-block;
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
   overflow: hidden;
   border: none;
   background: transparent;

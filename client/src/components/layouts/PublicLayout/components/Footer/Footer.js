@@ -25,9 +25,8 @@ const Footer = ({classes}) => {
                                     About
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
-                                    We are students study in National University of Civil Engineering, Ha Noi,
-                                    Viet Nam.
-                                    From Group 14, 61PM1 with love.
+                                    I am Giang Nguyen study in National University of Civil Engineering, Ha Noi, Viet Nam.
+                                    From 61PM1 with love.
                                 </Typography>
                                 <img src={Cards} alt=""/>
                             </div>
@@ -117,20 +116,20 @@ const Footer = ({classes}) => {
                         <Grid item container>
                             <Grid item container justify={"center"} alignItems={"center"} className="social-links">
                                 <Grid item className="social-links item">
-                                    <a href="https://www.facebook.com/pazo.dung.94" className="instagram"><i
-                                        className="fab fa-instagram"/><span>Dung Pazo</span></a>
+                                    <a href="https://www.instagram.com/giang9580/" className="instagram"><i
+                                        className="fab fa-instagram"/></a>
                                 </Grid>
                                 <Grid item className="social-links item">
-                                    <a href="https://www.facebook.com/nguyenkhuong.duy.756" className="google-plus"><i
-                                        className="fab fa-google-plus"/><span>Duy Nguyen</span></a>
+                                    <a href="https://myaccount.google.com/u/1/personal-info?gar=1" className="google-plus"><i
+                                        className="fab fa-google-plus"/></a>
                                 </Grid>
                                 <Grid item className="social-links item">
-                                    <a href="https://www.facebook.com/phamtrung.kien.12914" className="pinterest"><i
-                                        className="fab fa-pinterest"/><span>Kien Pham</span></a>
+                                    <a href="https://twitter.com/giang97916710" className="pinterest"><i
+                                        className="fab fa-twitter"/></a>
                                 </Grid>
                                 <Grid item className="social-links item">
                                     <a href="https://www.facebook.com/giang.hong.nguyen1998" className="facebook"><i
-                                        className="fab fa-facebook"/><span>Giang Nguyen</span></a>
+                                        className="fab fa-facebook"/></a>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -140,8 +139,7 @@ const Footer = ({classes}) => {
                                 {new Date().getFullYear()}
                                 {' '}All rights reserved | This template is made with <i className="fa fa-heart-o"
                                                                                          aria-hidden="true"/> by <Link
-                                    href="https://www.facebook.com/groups/348658492266798/" target="_blank">Group
-                                    14</Link></p>
+                                    href="https://www.facebook.com/giang.hong.nguyen1998/" target="_blank">Giang Nguyễn</Link></p>
                         </Grid>
                     </Grid>
                 </div>

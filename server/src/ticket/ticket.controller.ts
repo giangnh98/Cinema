@@ -1,15 +1,14 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, forwardRef, Get, HttpException, HttpStatus, Inject, Param, Post, Query } from "@nestjs/common";
 import { TicketService } from "./ticket.service";
 import { Auth } from "../shared/decorators/auth.decorator";
 import { UserRole } from "../user/models/user-role.enum";
-import { TicketParams } from "./view-models/ticket-params.model";
+import { TicketArrayPrams } from "./view-models/ticket-params.model";
 import { Ticket } from "./models/ticket.model";
 import { CurrentUser } from "../shared/decorators/user.decorator";
 import { InstanceType } from "typegoose";
 import { User } from "../user/models/user.model";
 import { ShowtimeService } from "../showtime/showtime.service";
 import { map } from "lodash";
-import { PrebookingService } from "../prebooking/prebooking.service";
 import { ApiTags } from "@nestjs/swagger";
 
 @Controller("tickets")
@@ -17,8 +16,8 @@ import { ApiTags } from "@nestjs/swagger";
 export class TicketController {
    constructor(
       private readonly _ticketService: TicketService,
+      @Inject(forwardRef(() => ShowtimeService))
       private readonly _showtimeService: ShowtimeService,
-      private readonly _prebookingService: PrebookingService
    ) {
    }
    
@@ -101,7 +100,7 @@ export class TicketController {
    @Post()
    @Auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.GUEST)
    async create(
-      @Body() ticketParams: TicketParams,
+      @Body() ticketParams: TicketArrayPrams,
       @CurrentUser() currentUser: InstanceType<User>
    ): Promise<Ticket[]> {
       const fields = Object.keys(ticketParams);
@@ -110,30 +109,29 @@ export class TicketController {
             throw new HttpException(`${field} is required`, HttpStatus.BAD_REQUEST);
          }
       });
-      const { seats, showtime, price, type } = ticketParams;
       const user = currentUser.toJSON() as User;
       
+      return this._ticketService.insertMany(ticketParams, user);
+   }
+
+   @Delete(':id')
+   @Auth(UserRole.SUPERADMIN, UserRole.ADMIN)
+   async cancelTicket(@Param('id') id: string): Promise<Ticket> {
+      let exists = {};
       try {
-         let tickets = [];
-         const showtimeRef = await this._showtimeService.findById(showtime);
-         for (let i = 0; i < seats.length; ++i) {
-            const newTicket = this._ticketService.createModel();
-            newTicket.showtime = showtimeRef._id;
-            newTicket.user = user;
-            newTicket.price = price[i];
-            newTicket.type = type[i];
-            newTicket.seats = seats[i];
-            newTicket.created = new Date();
-            newTicket.updated = new Date();
-            newTicket.createdBy = user.id;
-            newTicket.updatedBy = user.id;
-            const ticket = await this._ticketService.create(newTicket);
-            tickets.push(ticket);
-         }
-         await this._prebookingService.clearCollection({ user: user.id });
-         return map(tickets, pre => pre.toJSON() as Ticket);
-         
-      } catch (e) {
+         exists = await this._ticketService.findOne({ _id: id, isActive: true });
+      } catch(e) {
+         throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      if (!exists) {
+         throw new HttpException(`Ticket does not exists`, HttpStatus.BAD_REQUEST);
+      }
+
+      try {
+         const e = await this._ticketService.delete(id);
+         return e.toJSON() as Ticket;
+      } catch(e) {
          throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
